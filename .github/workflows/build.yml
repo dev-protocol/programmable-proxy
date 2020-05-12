@@ -16,8 +16,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-        env:
-          MASTER_CHANGED: ${{ contains(github.ref, 'master') && github.event_name != 'pull_request' }}
 
       - name: install deps
         run: yarn
@@ -29,18 +27,18 @@ jobs:
         run: yarn test
 
       - name: Login via Azure CLI
-        if: ${{ env.MASTER_CHANGED }}
+        if: contains(github.ref, 'master')
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Build
-        if: ${{ env.MASTER_CHANGED }}
+        if: contains(github.ref, 'master')
         run: |
           yarn build
 
       - name: Deploy to Azure Functions
-        if: ${{ env.MASTER_CHANGED }}
+        if: contains(github.ref, 'master')
         uses: Azure/functions-action@v1
         id: fa
         with:
