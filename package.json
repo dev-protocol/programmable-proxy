@@ -1,7 +1,7 @@
 {
-	"name": "template-repos-ts",
+	"name": "programmable-proxy",
 	"version": "1.0.0",
-	"description": "Template repository for using TypeScript",
+	"description": "Proxy function for Azure CDN",
 	"main": "index.js",
 	"scripts": {
 		"test": "ava",
@@ -13,7 +13,7 @@
 		"lint:eslint": "eslint . --ext .ts,.js --fix",
 		"lint:format": "prettier --write '**/*.{js,json,md,yml}'"
 	},
-	"author": "",
+	"author": "aggre <hiroyuki.aggre@gmail.com>",
 	"license": "MPL-2.0",
 	"dependencies": {
 		"ramda": "^0.27.0",
@@ -52,12 +52,6 @@
 			"pre-commit": "yarn lint"
 		}
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/dev-protocol/template-repos-ts.git"
-	},
-	"bugs": {
-		"url": "https://github.com/dev-protocol/template-repos-ts/issues"
-	},
-	"homepage": "https://github.com/dev-protocol/template-repos-ts#readme"
+	"repository": "git@github.com:dev-protocol/programmable-proxy.git",
+	"private": true
 }
