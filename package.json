@@ -2,13 +2,14 @@
 	"name": "programmable-proxy",
 	"version": "1.0.0",
 	"description": "Proxy function for Azure CDN",
-	"main": "index.js",
 	"scripts": {
 		"test": "ava",
 		"build": "tsc",
 		"watch": "tsc -w",
+		"start": "func start",
 		"pretest": "yarn build",
 		"prebuild": "rimraf dist",
+		"prestart": "npm run build",
 		"lint": "yarn lint:eslint && yarn lint:format",
 		"lint:eslint": "eslint . --ext .ts,.js --fix",
 		"lint:format": "prettier --write '**/*.{js,json,md,yml}'"
@@ -16,6 +17,7 @@
 	"author": "aggre <hiroyuki.aggre@gmail.com>",
 	"license": "MPL-2.0",
 	"dependencies": {
+		"@azure/functions": "^1.2.0",
 		"ramda": "^0.27.0",
 		"web3": "^1.2.7"
 	},
