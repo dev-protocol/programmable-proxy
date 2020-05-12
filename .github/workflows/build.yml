@@ -29,18 +29,18 @@ jobs:
         run: yarn test
 
       - name: Login via Azure CLI
-        if: ${{ env.MASTER_CHANGED == 'true'}}
+        if: ${{ env.MASTER_CHANGED }}
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Build
-        if: ${{ env.MASTER_CHANGED == 'true'}}
+        if: ${{ env.MASTER_CHANGED }}
         run: |
           yarn build
 
       - name: Deploy to Azure Functions
-        if: ${{ env.MASTER_CHANGED == 'true'}}
+        if: ${{ env.MASTER_CHANGED }}
         uses: Azure/functions-action@v1
         id: fa
         with:
