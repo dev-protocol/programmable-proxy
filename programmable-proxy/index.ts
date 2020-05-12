@@ -1,17 +1,31 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import { parse } from 'url'
+import axios, { Method } from 'axios'
 
 const httpTrigger: AzureFunction = async function (
 	context: Context,
 	req: HttpRequest
 ): Promise<void> {
-	const name = req.query.name || (req.body && req.body.name)
-	const responseMessage = name
-		? 'Hello, ' + name + '. This HTTP triggered function executed successfully.'
-		: 'This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.'
+	const { query, headers, method, body: data } = req
+	const { url: _url } = query
+	const { ['pp-additional-query']: additionalQuery = '' } = headers
+	const hasQuery = Boolean(parse(_url).query)
+	const url = `${_url}${
+		hasQuery ? `&${additionalQuery}` : `?${additionalQuery}`
+	}`
+	const res = await axios({
+		method: method as Method,
+		url,
+		headers,
+		data,
+	})
+	const { status, data: body, headers: resHeaders } = res
 
 	// eslint-disable-next-line functional/immutable-data, functional/no-expression-statement
 	context.res = {
-		body: responseMessage,
+		status,
+		body,
+		headers: resHeaders,
 	}
 }
 

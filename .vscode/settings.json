@@ -2,10 +2,7 @@
 	"editor.codeActionsOnSave": {
 		"source.fixAll": true
 	},
-	"eslint.validate": [
-		"javascript",
-		"typescript"
-	],
+	"eslint.validate": ["javascript", "typescript"],
 	"azureFunctions.deploySubpath": ".",
 	"azureFunctions.postDeployTask": "npm install",
 	"azureFunctions.projectLanguage": "TypeScript",
