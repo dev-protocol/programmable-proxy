@@ -16,6 +16,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+        env:
+          MASTER_CHANGED: ${{ contains(github.ref, 'master') && github.event_name != 'pull_request' }}
 
       - name: install deps
         run: yarn
