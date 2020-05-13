@@ -43,7 +43,7 @@ test('Use hash as a passthrough URL', async (t) => {
 	t.deepEqual(ignore(context.res?.headers), ignore(res.headers))
 })
 
-test('Adds the value of "pp-additional-query" header as a pass-through URL.', async (t) => {
+test('Adds the value of "pp-additional-query" header as a passthrough URL', async (t) => {
 	const context = {} as Context
 	await fn(
 		context,
