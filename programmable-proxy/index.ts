@@ -6,11 +6,11 @@ const httpTrigger: AzureFunction = async function (
 	context: Context,
 	req: HttpRequest
 ): Promise<void> {
-	const { query, headers, method, body: data } = req
-	const { url: _url } = query
+	const { url: _url, headers, method, body: data } = req
 	const { ['pp-additional-query']: additionalQuery = '' } = headers
-	const hasQuery = Boolean(parse(_url).query)
-	const url = `${_url}${
+	const urlInHash = parse(_url).hash?.replace(/^#/, '')
+	const hasQuery = Boolean(parse(urlInHash || '').query)
+	const url = `${urlInHash}${
 		hasQuery ? `&${additionalQuery}` : `?${additionalQuery}`
 	}`
 	const res = await axios({

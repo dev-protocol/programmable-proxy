@@ -5,10 +5,11 @@ import { Context, HttpRequest } from '@azure/functions'
 import axios from 'axios'
 
 const createReq = (opts: {
-	readonly headers: HttpRequest['headers']
-	readonly body: HttpRequest['body']
-	readonly method: HttpRequest['method']
-	readonly query: HttpRequest['query']
+	readonly url?: string
+	readonly headers?: HttpRequest['headers']
+	readonly body?: HttpRequest['body']
+	readonly method?: HttpRequest['method']
+	readonly query?: HttpRequest['query']
 }): HttpRequest => (opts as unknown) as HttpRequest
 const ignore = (headers: any): any => {
 	delete headers.age
@@ -20,12 +21,12 @@ const ignore = (headers: any): any => {
 	return headers
 }
 
-test('Use `url` query parameter as a passthrough URL', async (t) => {
+test('Use hash as a passthrough URL', async (t) => {
 	const context = {} as Context
 	await fn(
 		context,
 		createReq({
-			query: { url: 'https://example.com' },
+			url: 'https://com.com/#https://example.com/',
 			body: '',
 			headers: {},
 			method: 'GET',
@@ -47,7 +48,7 @@ test('Adds the value of "pp-additional-query" header as a pass-through URL.', as
 	await fn(
 		context,
 		createReq({
-			query: { url: 'https://example.com/?test=yes' },
+			url: 'https://com.com/#https://example.com/?test=yes',
 			body: '',
 			headers: {
 				'pp-additional-query': 'addition=yes',
