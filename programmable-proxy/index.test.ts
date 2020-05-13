@@ -21,12 +21,16 @@ const ignore = (headers: any): any => {
 	return headers
 }
 
-test('Use hash as a passthrough URL', async (t) => {
+test('Use the string that joined `s` query and other all queries as a passthrough URL', async (t) => {
 	const context = {} as Context
 	await fn(
 		context,
 		createReq({
-			url: 'https://com.com/#https://example.com/',
+			query: {
+				s: 'https://example.com/?a=1',
+				b: '2',
+				c: '3',
+			},
 			body: '',
 			headers: {},
 			method: 'GET',
@@ -34,7 +38,7 @@ test('Use hash as a passthrough URL', async (t) => {
 	)
 	const res = await axios({
 		method: 'GET',
-		url: 'https://example.com',
+		url: 'https://example.com/?a=1&b=2&c=3',
 		headers: {},
 		data: '',
 	})
@@ -48,7 +52,9 @@ test('Adds the value of "pp-additional-query" header as a passthrough URL', asyn
 	await fn(
 		context,
 		createReq({
-			url: 'https://com.com/#https://example.com/?test=yes',
+			query: {
+				s: 'https://example.com/?test=yes',
+			},
 			body: '',
 			headers: {
 				'pp-additional-query': 'addition=yes',

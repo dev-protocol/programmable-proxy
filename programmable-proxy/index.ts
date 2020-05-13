@@ -1,16 +1,19 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import { parse } from 'url'
 import axios, { Method } from 'axios'
 
 const httpTrigger: AzureFunction = async function (
 	context: Context,
 	req: HttpRequest
 ): Promise<void> {
-	const { url: _url, headers, method, body: data } = req
+	const { query, headers, method, body: data } = req
+	const { s } = query
+	const queries = Object.keys(query)
+	const _url = `${s}?${queries
+		.filter((k) => k !== 's')
+		.reduce((a, c) => `${a}&${c}=${query[c]}`, '')}`
 	const { ['pp-additional-query']: additionalQuery = '' } = headers
-	const urlInHash = parse(_url).hash?.replace(/^#/, '')
-	const hasQuery = Boolean(parse(urlInHash || '').query)
-	const url = `${urlInHash}${
+	const hasQuery = queries.length > 1
+	const url = `${_url}${
 		hasQuery ? `&${additionalQuery}` : `?${additionalQuery}`
 	}`
 	const res = await axios({
