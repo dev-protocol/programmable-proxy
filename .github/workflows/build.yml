@@ -51,8 +51,7 @@ jobs:
           key: ${{ runner.os }}-${ GITHUB_SHA }
 
       - name: Build
-        run: |
-          yarn build
+        run: yarn build
 
       - name: Login via Azure CLI
         uses: azure/login@v1
