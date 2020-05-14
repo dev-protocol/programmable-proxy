@@ -1,6 +1,7 @@
 import { AzureFunction, HttpRequest } from '@azure/functions'
 import axios, { Method } from 'axios'
 import { usableHeaders, request, response } from './ignore-headers'
+import { parse } from 'url'
 
 type Response = {
 	readonly status: number
@@ -15,17 +16,17 @@ const httpTrigger: AzureFunction = async function (
 	req: HttpRequest
 ): Promise<Response> {
 	const { query, headers: _reqHeaders, method, body: data } = req
-	const { s } = query
-	const queries = Object.keys(query)
-	const _url = `${s}?${queries
-		.filter((k) => k !== 's')
-		.reduce((a, c) => `${a}&${c}=${query[c]}`, '')}`
-	const { ['pp-additional-query']: additionalQuery = '' } = _reqHeaders
 	const headers = usableHeaders(_reqHeaders, request)
-	const hasQuery = queries.length > 1
-	const url = `${_url}${
-		hasQuery ? `&${additionalQuery}` : `?${additionalQuery}`
-	}`
+	const url = ((queries, _url) => {
+		const queryQ = queries
+			.filter((k) => k !== 's')
+			.reduce((a, c) => `${a}${a === '' ? '' : '&'}${c}=${query[c]}`, '')
+		const { ['pp-additional-query']: queryH = '' } = _reqHeaders
+		const joinedQuery = `${queryQ}${queryQ && queryH ? '&' : ''}${queryH}`
+		const hasQuery = Boolean(parse(_url).query)
+		return `${_url}${hasQuery ? '&' : '?'}${joinedQuery}`
+	})(Object.keys(query), query.s)
+
 	const res = await axios({
 		method: method as Method,
 		url,

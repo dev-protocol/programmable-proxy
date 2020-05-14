@@ -1,9 +1,10 @@
 /* eslint-disable functional/immutable-data */
-import test from 'ava'
+import test, { after } from 'ava'
 import fn from './index'
 import { Context, HttpRequest } from '@azure/functions'
 import axios from 'axios'
 import { usableHeaders, response } from './ignore-headers'
+import { createServer } from 'http'
 
 const createReq = (opts: {
 	readonly url?: string
@@ -12,22 +13,18 @@ const createReq = (opts: {
 	readonly method?: HttpRequest['method']
 	readonly query?: HttpRequest['query']
 }): HttpRequest => (opts as unknown) as HttpRequest
-const ignore = (headers: any): any => {
-	delete headers.age
-	delete headers.date
-	delete headers.etag
-	delete headers.expires
-	delete headers.server
-	delete headers['accept-ranges']
-	return headers
-}
+const server = createServer(function (req, res) {
+	res.writeHead(200, req.headers)
+	res.write(JSON.stringify({ url: req.url }))
+	res.end()
+}).listen(8888)
 
 test('Use the string that joined `s` query and other all queries as a passthrough URL', async (t) => {
 	const result = await fn(
 		{} as Context,
 		createReq({
 			query: {
-				s: 'https://example.com/?a=1',
+				s: 'http://localhost:8888/?a=1',
 				b: '2',
 				c: '3',
 			},
@@ -38,16 +35,13 @@ test('Use the string that joined `s` query and other all queries as a passthroug
 	)
 	const res = await axios({
 		method: 'GET',
-		url: 'https://example.com/?a=1&b=2&c=3',
+		url: 'http://localhost:8888/?a=1&b=2&c=3',
 		headers: {},
 		data: '',
 	})
 	t.is(result.status, res.status)
-	t.is(result.body, res.data)
-	t.deepEqual(
-		ignore(result.headers),
-		usableHeaders(ignore(res.headers), response)
-	)
+	t.deepEqual(result.body, res.data)
+	t.deepEqual(result.headers, usableHeaders(res.headers, response))
 })
 
 test('Adds the value of "pp-additional-query" header as a passthrough URL', async (t) => {
@@ -55,7 +49,7 @@ test('Adds the value of "pp-additional-query" header as a passthrough URL', asyn
 		{} as Context,
 		createReq({
 			query: {
-				s: 'https://example.com/?test=yes',
+				s: 'http://localhost:8888/?test=yes',
 			},
 			body: '',
 			headers: {
@@ -66,14 +60,15 @@ test('Adds the value of "pp-additional-query" header as a passthrough URL', asyn
 	)
 	const res = await axios({
 		method: 'GET',
-		url: 'https://example.com/?test=yes&addition=yes',
+		url: 'http://localhost:8888/?test=yes&addition=yes',
 		headers: {},
 		data: '',
 	})
 	t.is(result.status, res.status)
-	t.is(result.body, res.data)
-	t.deepEqual(
-		ignore(result.headers),
-		usableHeaders(ignore(res.headers), response)
-	)
+	t.deepEqual(result.body, res.data)
+	t.deepEqual(result.headers, usableHeaders(res.headers, response))
+})
+
+after(() => {
+	server.close()
 })
