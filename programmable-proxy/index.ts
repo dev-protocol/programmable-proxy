@@ -17,15 +17,16 @@ const httpTrigger: AzureFunction = async function (
 ): Promise<Response> {
 	const { query, headers: _reqHeaders, method, body: data } = req
 	const headers = usableHeaders(_reqHeaders, request)
-	const url = ((queries, _url) => {
-		const queryQ = queries
+	const url = ((q, h) => {
+		const { s: _url } = q
+		const queryQ = Object.keys(q)
 			.filter((k) => k !== 's')
-			.reduce((a, c) => `${a}${a === '' ? '' : '&'}${c}=${query[c]}`, '')
-		const { ['pp-additional-query']: queryH = '' } = _reqHeaders
+			.reduce((a, c) => `${a}${a === '' ? '' : '&'}${c}=${q[c]}`, '')
+		const { ['pp-additional-query']: queryH = '' } = h
 		const joinedQuery = `${queryQ}${queryQ && queryH ? '&' : ''}${queryH}`
 		const hasQuery = Boolean(parse(_url).query)
 		return `${_url}${hasQuery ? '&' : '?'}${joinedQuery}`
-	})(Object.keys(query), query.s)
+	})(query, _reqHeaders)
 
 	const res = await axios({
 		method: method as Method,
