@@ -3,6 +3,7 @@ import test from 'ava'
 import fn from './index'
 import { Context, HttpRequest } from '@azure/functions'
 import axios from 'axios'
+import { usableHeaders, response } from './ignore-headers'
 
 const createReq = (opts: {
 	readonly url?: string
@@ -22,9 +23,8 @@ const ignore = (headers: any): any => {
 }
 
 test('Use the string that joined `s` query and other all queries as a passthrough URL', async (t) => {
-	const context = {} as Context
-	await fn(
-		context,
+	const result = await fn(
+		{} as Context,
 		createReq({
 			query: {
 				s: 'https://example.com/?a=1',
@@ -42,15 +42,17 @@ test('Use the string that joined `s` query and other all queries as a passthroug
 		headers: {},
 		data: '',
 	})
-	t.is(context.res?.status, res.status)
-	t.is(context.res?.body, res.data)
-	t.deepEqual(ignore(context.res?.headers), ignore(res.headers))
+	t.is(result.status, res.status)
+	t.is(result.body, res.data)
+	t.deepEqual(
+		ignore(result.headers),
+		usableHeaders(ignore(res.headers), response)
+	)
 })
 
 test('Adds the value of "pp-additional-query" header as a passthrough URL', async (t) => {
-	const context = {} as Context
-	await fn(
-		context,
+	const result = await fn(
+		{} as Context,
 		createReq({
 			query: {
 				s: 'https://example.com/?test=yes',
@@ -68,7 +70,10 @@ test('Adds the value of "pp-additional-query" header as a passthrough URL', asyn
 		headers: {},
 		data: '',
 	})
-	t.is(context.res?.status, res.status)
-	t.is(context.res?.body, res.data)
-	t.deepEqual(ignore(context.res?.headers), ignore(res.headers))
+	t.is(result.status, res.status)
+	t.is(result.body, res.data)
+	t.deepEqual(
+		ignore(result.headers),
+		usableHeaders(ignore(res.headers), response)
+	)
 })

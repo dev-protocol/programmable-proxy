@@ -1,17 +1,27 @@
-import { AzureFunction, Context, HttpRequest } from '@azure/functions'
+import { AzureFunction, HttpRequest } from '@azure/functions'
 import axios, { Method } from 'axios'
+import { usableHeaders, request, response } from './ignore-headers'
+
+type Response = {
+	readonly status: number
+	readonly body: string | object
+	readonly headers: {
+		readonly [key: string]: string
+	}
+}
 
 const httpTrigger: AzureFunction = async function (
-	context: Context,
+	_,
 	req: HttpRequest
-): Promise<void> {
-	const { query, headers, method, body: data } = req
+): Promise<Response> {
+	const { query, headers: _reqHeaders, method, body: data } = req
 	const { s } = query
 	const queries = Object.keys(query)
 	const _url = `${s}?${queries
 		.filter((k) => k !== 's')
 		.reduce((a, c) => `${a}&${c}=${query[c]}`, '')}`
-	const { ['pp-additional-query']: additionalQuery = '' } = headers
+	const { ['pp-additional-query']: additionalQuery = '' } = _reqHeaders
+	const headers = usableHeaders(_reqHeaders, request)
 	const hasQuery = queries.length > 1
 	const url = `${_url}${
 		hasQuery ? `&${additionalQuery}` : `?${additionalQuery}`
@@ -22,10 +32,10 @@ const httpTrigger: AzureFunction = async function (
 		headers,
 		data,
 	})
-	const { status, data: body, headers: resHeaders } = res
+	const { status, data: body, headers: _resHeaders } = res
+	const resHeaders = usableHeaders(_resHeaders, response)
 
-	// eslint-disable-next-line functional/immutable-data, functional/no-expression-statement
-	context.res = {
+	return {
 		status,
 		body,
 		headers: resHeaders,
