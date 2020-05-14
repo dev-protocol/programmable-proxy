@@ -1,20 +1,16 @@
-# template-repos-ts
-
-Template repository for using TypeScript
-
-# Stack
-
-- npm client is [yarn](https://github.com/yarnpkg/yarn)
-- Testing is [ava](https://github.com/avajs/ava)
-- Linting is [eslint](https://github.com/eslint/eslint)
-- Basic lint rule set is [eslint-plugin-functional](https://github.com/jonaskello/eslint-plugin-functional)
-- Formatter is [prettier](https://github.com/prettier/prettier)
-- Pre-install utility is [ramda](https://github.com/ramda/ramda)
-
 # Usage
 
-Create a repository using this template; just runs following command.
+Azure CDN endpoint `https://programmable-proxy.azureedge.net` is using these functions as the origin.
 
-```bash
-yarn
-```
+programmable-proxy proxies a REST API specified by the `s` query. Any sensitive information that you don't want to expose to a client-side should be added by [Azure CDN rules engine](https://docs.microsoft.com/en-us/azure/cdn/cdn-standard-rules-engine-reference).
+
+If REST API expects that sensitive information to be included in the query, you can specify it from the Azure CDN rules engine using the `pp-additional-query` header.
+
+### For example
+
+Configure Azure CDN rules engine:
+![Azure CDN rules engine](https://i.imgur.com/iOGUZPs.png)
+
+Request without sensitive information: `https://programmable-proxy.azureedge.net/?s=https://my.private.api.com/?someParam=1`
+
+➜ Proxied URL: `https://my.private.api.com/?someParam=1&token=ABC123`
