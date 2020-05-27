@@ -5,7 +5,7 @@ import { parse } from 'url'
 
 type Response = {
 	readonly status: number
-	readonly body: string | object
+	readonly body: string | Record<string, unknown>
 	readonly headers: {
 		readonly [key: string]: string
 	}
