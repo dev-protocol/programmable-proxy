@@ -20,7 +20,7 @@
 		"@azure/functions": "1.2.2",
 		"axios": "0.19.2",
 		"ramda": "0.27.0",
-		"web3": "1.2.8"
+		"web3": "1.2.9"
 	},
 	"devDependencies": {
 		"@ava/typescript": "1.1.1",
