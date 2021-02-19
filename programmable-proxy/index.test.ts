@@ -69,6 +69,33 @@ test('Adds the value of "pp-additional-query" header as a passthrough URL', asyn
 	t.deepEqual(result.headers, usableHeaders(res.headers, response))
 })
 
+test('Adds an authorization header with a bearer token of "pp-authorization-bearer" header as an authorization header with a bearer token', async (t) => {
+	const result = await fn(
+		{} as Context,
+		createReq({
+			query: {
+				s: 'http://localhost:8888',
+			},
+			body: '',
+			headers: {
+				'pp-authorization-bearer': 'TEST_SECRET',
+			},
+			method: 'GET',
+		})
+	)
+	const res = await axios({
+		method: 'GET',
+		url: 'http://localhost:8888?',
+		headers: {
+			authorization: 'bearer TEST_SECRET',
+		},
+		data: '',
+	})
+	t.is(result.status, res.status)
+	t.deepEqual(result.body, res.data)
+	t.deepEqual(result.headers, usableHeaders(res.headers, response))
+})
+
 after(() => {
 	server.close()
 })

@@ -4,7 +4,9 @@ Azure CDN endpoint `https://programmable-proxy.azureedge.net` is using these fun
 
 programmable-proxy proxies a REST API specified by the `s` query. Any sensitive information that you don't want to expose to a client-side should be added by [Azure CDN rules engine](https://docs.microsoft.com/en-us/azure/cdn/cdn-standard-rules-engine-reference).
 
-If REST API expects that sensitive information to be included in the query, you can specify it from the Azure CDN rules engine using the `pp-additional-query` header.
+If REST API expects sensitive information to be included in the query, you can specify it from the Azure CDN rules engine using the `pp-additional-query` header.
+
+If REST API expects a bearer token to be included in the authorization header, you can specify it from the Azure CDN rules engine using the `pp-authorization-bearer` header.
 
 ### For example
 

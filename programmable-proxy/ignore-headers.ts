@@ -1,4 +1,8 @@
-export const request = ['host', 'pp-additional-query']
+export const request = [
+	'host',
+	'pp-additional-query',
+	'pp-authorization-bearer',
+]
 
 export const response = ['transfer-encoding']
 

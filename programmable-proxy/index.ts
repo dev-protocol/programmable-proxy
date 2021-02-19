@@ -15,17 +15,27 @@ const httpTrigger: AzureFunction = async function (
 	req: HttpRequest
 ): Promise<Response> {
 	const { query, headers: _reqHeaders, method, body: data } = req
-	const headers = usableHeaders(_reqHeaders, request)
-	const url = ((q, h) => {
+	const {
+		['pp-additional-query']: additionalQuery = '',
+		['pp-authorization-bearer']: authorizationBearer,
+	} = _reqHeaders
+	const headers = {
+		...usableHeaders(_reqHeaders, request),
+		...(authorizationBearer
+			? { authorization: `bearer ${authorizationBearer}` }
+			: undefined),
+	}
+	const url = ((q) => {
 		const { s: _url } = q
 		const queryQ = Object.keys(q)
 			.filter((k) => k !== 's')
 			.reduce((a, c) => `${a}${a === '' ? '' : '&'}${c}=${q[c]}`, '')
-		const { ['pp-additional-query']: queryH = '' } = h
-		const joinedQuery = `${queryQ}${queryQ && queryH ? '&' : ''}${queryH}`
+		const joinedQuery = `${queryQ}${
+			queryQ && additionalQuery ? '&' : ''
+		}${additionalQuery}`
 		const hasQuery = Boolean(new URL(_url).search)
 		return `${_url}${hasQuery ? '&' : '?'}${joinedQuery}`
-	})(query, _reqHeaders)
+	})(query)
 
 	const res = await axios({
 		method: method as Method,
