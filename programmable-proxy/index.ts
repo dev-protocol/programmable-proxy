@@ -1,7 +1,6 @@
 import { AzureFunction, HttpRequest } from '@azure/functions'
 import axios, { Method } from 'axios'
 import { usableHeaders, request, response } from './ignore-headers'
-import { parse } from 'url'
 
 type Response = {
 	readonly status: number
@@ -24,7 +23,7 @@ const httpTrigger: AzureFunction = async function (
 			.reduce((a, c) => `${a}${a === '' ? '' : '&'}${c}=${q[c]}`, '')
 		const { ['pp-additional-query']: queryH = '' } = h
 		const joinedQuery = `${queryQ}${queryQ && queryH ? '&' : ''}${queryH}`
-		const hasQuery = Boolean(parse(_url).query)
+		const hasQuery = Boolean(new URL(_url).search)
 		return `${_url}${hasQuery ? '&' : '?'}${joinedQuery}`
 	})(query, _reqHeaders)
 
