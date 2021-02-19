@@ -7,7 +7,7 @@ export const request = [
 export const response = ['transfer-encoding']
 
 export const usableHeaders = (
-	headers: { readonly [key: string]: string },
+	headers: { readonly [key: string]: string | undefined },
 	ignore: readonly string[]
 ): { readonly [key: string]: string } => {
 	const h = Object.keys(headers).filter((k) => !ignore.includes(k))
