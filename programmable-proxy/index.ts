@@ -33,7 +33,7 @@ const httpTrigger: AzureFunction = async function (
 		const joinedQuery = `${queryQ}${
 			queryQ && additionalQuery ? '&' : ''
 		}${additionalQuery}`
-		const hasQuery = Boolean(new URL(_url).search)
+		const hasQuery = Boolean(_url ? new URL(_url).search : undefined)
 		return `${_url}${hasQuery ? '&' : '?'}${joinedQuery}`
 	})(query)
 
