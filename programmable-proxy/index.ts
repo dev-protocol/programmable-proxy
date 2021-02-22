@@ -1,5 +1,8 @@
+/* eslint-disable functional/immutable-data */
+/* eslint-disable functional/no-expression-statement */
 import { AzureFunction, HttpRequest } from '@azure/functions'
 import axios, { Method } from 'axios'
+import { URL } from 'url'
 import { usableHeaders, request, response } from './ignore-headers'
 
 type Response = {
@@ -15,16 +18,7 @@ const httpTrigger: AzureFunction = async function (
 	req: HttpRequest
 ): Promise<Response> {
 	const { query, headers: _reqHeaders, method, body: data } = req
-	const {
-		['pp-additional-query']: additionalQuery = '',
-		['pp-authorization-bearer']: authorizationBearer,
-	} = _reqHeaders
-	const headers = {
-		...usableHeaders(_reqHeaders, request),
-		...(authorizationBearer
-			? { authorization: `bearer ${authorizationBearer}` }
-			: undefined),
-	}
+
 	const url = ((q) => {
 		const { s: _url } = q
 		const queryQ = Object.keys(q)
@@ -36,6 +30,19 @@ const httpTrigger: AzureFunction = async function (
 		const hasQuery = Boolean(_url ? new URL(_url).search : undefined)
 		return `${_url}${hasQuery ? '&' : '?'}${joinedQuery}`
 	})(query)
+
+	const isTwitterApi = new URL(url).hostname === 'api.twitter.com'
+	const {
+		['pp-additional-query']: additionalQuery = '',
+		['pp-authorization-bearer']: tmp,
+	} = _reqHeaders
+	const authorizationBearer = isTwitterApi ? tmp : ''
+	const headers = {
+		...usableHeaders(_reqHeaders, request),
+		...(authorizationBearer
+			? { authorization: `bearer ${authorizationBearer}` }
+			: undefined),
+	}
 
 	const res = await axios({
 		method: method as Method,
