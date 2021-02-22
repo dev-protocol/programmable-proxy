@@ -1,5 +1,3 @@
-/* eslint-disable functional/immutable-data */
-/* eslint-disable functional/no-expression-statement */
 import { AzureFunction, HttpRequest } from '@azure/functions'
 import axios, { Method } from 'axios'
 import { URL } from 'url'
