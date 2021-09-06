@@ -12,7 +12,7 @@ const createReq = (opts: {
 	readonly body?: HttpRequest['body']
 	readonly method?: HttpRequest['method']
 	readonly query?: HttpRequest['query']
-}): HttpRequest => (opts as unknown) as HttpRequest
+}): HttpRequest => opts as unknown as HttpRequest
 const server = createServer(function (req, res) {
 	res.writeHead(200, req.headers)
 	res.write(JSON.stringify({ url: req.url }))
