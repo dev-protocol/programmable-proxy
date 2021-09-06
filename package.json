@@ -18,7 +18,7 @@
 	"license": "MPL-2.0",
 	"dependencies": {
 		"@azure/functions": "1.2.3",
-		"axios": "0.21.3",
+		"axios": "0.21.4",
 		"ramda": "0.27.1",
 		"web3": "1.5.2"
 	},
