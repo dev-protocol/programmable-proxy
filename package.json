@@ -47,7 +47,8 @@
 		"typescript": {
 			"rewritePaths": {
 				"/": "dist/"
-			}
+			},
+			"compile": false
 		}
 	},
 	"husky": {
