@@ -33,7 +33,7 @@
 		"dotenv": "16.1.4",
 		"eslint": "7.32.0",
 		"eslint-config-prettier": "8.8.0",
-		"eslint-plugin-functional": "3.7.2",
+		"eslint-plugin-functional": "5.0.8",
 		"eslint-plugin-prettier": "4.2.1",
 		"husky": "7.0.4",
 		"prettier": "2.8.8",
