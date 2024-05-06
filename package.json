@@ -19,14 +19,14 @@
 	"dependencies": {
 		"@azure/functions": "3.5.1",
 		"axios": "1.2.3",
-		"ramda": "0.29.1",
+		"ramda": "0.30.0",
 		"web3": "1.7.4"
 	},
 	"devDependencies": {
 		"@ava/typescript": "2.0.0",
 		"@types/dotenv": "8.2.0",
 		"@types/node": "20.12.8",
-		"@types/ramda": "0.29.12",
+		"@types/ramda": "0.30.0",
 		"@typescript-eslint/eslint-plugin": "5.62.0",
 		"@typescript-eslint/parser": "5.62.0",
 		"ava": "3.15.0",
