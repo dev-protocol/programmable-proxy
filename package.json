@@ -17,7 +17,7 @@
 	"author": "aggre <hiroyuki.aggre@gmail.com>",
 	"license": "MPL-2.0",
 	"dependencies": {
-		"@azure/functions": "3.5.1",
+		"@azure/functions": "4.7.0",
 		"axios": "1.2.3",
 		"ramda": "0.30.1",
 		"web3": "1.7.4"
